@@ -14,7 +14,8 @@
 Interactive web app:
 
 <p align="center">
-[![streamlit app](https://img.shields.io/badge/-Streamlit%20app-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://piapproximations.herokuapp.com/)
+<a href="https://piapproximations.herokuapp.com/" target="_blank">
+<img src="https://img.shields.io/badge/-Streamlit%20app-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white" alt="streamlit app badge"></a>
 </p>
 
 ## Installation and usage
