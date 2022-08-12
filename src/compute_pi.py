@@ -105,14 +105,14 @@ class PiMonteCarlo:
         fig.update_xaxes(range=[0, 1], constrain='domain')
         fig.update_yaxes(range=[0, 1], constrain='domain')
         fig.update_layout(xaxis=dict(scaleanchor="y", scaleratio=1))
-        fig.show()
         # TODO title
+        return fig
 
     def plot(self, dot_colors=('red', 'blue'), backend='matplotlib'):
         colors = self._colors(dot_colors)
         if backend == 'matplotlib':
             self._matplotlib(colors)
         elif backend == 'plotly':
-            self._plotly(colors)
+            return self._plotly(colors)
         else:
             raise ValueError('Backend must be matplotlib or plotly')
