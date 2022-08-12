@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 
-from helpers import create_coords, distance_points, error
+from src.helpers import create_coords, distance_points, error
 
 
 def pi_leibniz(number_of_terms):
@@ -92,7 +92,7 @@ class PiMonteCarlo:
         ax.set_title(fr"Points = {self.points:,.0f}   "
                      fr"$\pi \approx$ {self.calculate:.4f}   "
                      fr"Error = {self.error():.2%}")
-        plt.show()
+        return ax
 
     def _plotly(self, colors):
         x, y = zip(*self.coords)
@@ -104,14 +104,17 @@ class PiMonteCarlo:
                       line_color=colors[0])
         fig.update_xaxes(range=[0, 1], constrain='domain')
         fig.update_yaxes(range=[0, 1], constrain='domain')
-        fig.update_layout(xaxis=dict(scaleanchor="y", scaleratio=1))
+        fig.update_layout(xaxis=dict(scaleanchor="y", scaleratio=1),
+                          autosize=True,
+                          margin=dict(l=20, r=20, t=20, b=20),
+                          modebar=dict(orientation='v'))
         # TODO title
         return fig
 
     def plot(self, dot_colors=('red', 'blue'), backend='matplotlib'):
         colors = self._colors(dot_colors)
         if backend == 'matplotlib':
-            self._matplotlib(colors)
+            return self._matplotlib(colors)
         elif backend == 'plotly':
             return self._plotly(colors)
         else:
