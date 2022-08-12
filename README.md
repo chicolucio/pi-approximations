@@ -5,7 +5,7 @@
 [![Heroku](https://img.shields.io/badge/Heroku-430098.svg?style=plastic&logo=Heroku&logoColor=white)](https://piapproximations.herokuapp.com/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B.svg?style=plastic&logo=streamlit&logoColor=white)](https://piapproximations.herokuapp.com/)
 
-    Pi approximations calculated using infinite series and Monte Carlo methods
+> Pi approximations calculated using infinite series and Monte Carlo methods
 
 <p align="center">
 <img src="https://github.com/chicolucio/pi-approximations/blob/master/pi_small.gif?raw=true" alt="banner">
