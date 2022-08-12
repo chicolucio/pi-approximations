@@ -3,7 +3,7 @@ from contextlib import nullcontext as does_not_raise
 
 import pytest
 
-from compute_pi import pi_leibniz, pi_euler, PiMonteCarlo
+from src.compute_pi import pi_leibniz, pi_euler, PiMonteCarlo
 
 
 def test_leibniz_n1():
