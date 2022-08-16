@@ -62,7 +62,7 @@ class PiMonteCarlo:
             np.array([distance_points(c) for c in self.coords]) <= 1, 1,
             0)
 
-    def _count(self):
+    def count_inside_circle(self):
         return np.sum(self._mask())
 
     @cached_property
@@ -71,7 +71,7 @@ class PiMonteCarlo:
 
     @cached_property
     def calculate(self):
-        area_estimate = self._count() / self.points
+        area_estimate = self.count_inside_circle() / self.points
         return area_estimate * 4
 
     def error(self, expected=math.pi):
