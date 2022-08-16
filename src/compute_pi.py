@@ -4,6 +4,7 @@ from functools import cached_property
 import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
+from matplotlib.patches import Arc
 
 from src.helpers import create_coords, distance_points, error
 
@@ -86,22 +87,28 @@ class PiMonteCarlo:
     def _colors(self, dot_colors=('red', 'blue')):
         return np.where(self._mask() == 1, *dot_colors)
 
-    def _matplotlib(self, colors):
-        fig, ax = plt.subplots(figsize=(8, 8), facecolor=(1, 1, 1))
+    def _matplotlib(self, colors, ax, arc):
         ax.scatter(*zip(*self.coords), color=colors)
         ax.set_title(fr"Points = {self.points:,.0f}   "
                      fr"$\pi \approx$ {self.calculate:.4f}   "
                      fr"Error = {self.error():.2%}")
+        if arc:
+            arc = Arc(xy=(0, 0), theta1=0, theta2=90, height=2, width=2,
+                      color='red', linewidth=3)
+            ax.add_patch(arc)
+            ax.set_ylim(0, 1)
+            ax.set_xlim(0, 1)
         return ax
 
-    def _plotly(self, colors):
+    def _plotly(self, colors, arc):
         x, y = zip(*self.coords)
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=x, y=y,
                                  mode='markers',
                                  marker=dict(color=colors)))
-        fig.add_shape(type='circle', x0=-1, x1=1, y0=-1, y1=1,
-                      line_color=colors[0])
+        if arc:
+            fig.add_shape(type='circle', x0=-1, x1=1, y0=-1, y1=1,
+                          line_color=colors[0])
         fig.update_xaxes(range=[0, 1], constrain='domain')
         fig.update_yaxes(range=[0, 1], constrain='domain')
         fig.update_layout(xaxis=dict(scaleanchor="y", scaleratio=1),
@@ -111,11 +118,13 @@ class PiMonteCarlo:
         # TODO title
         return fig
 
-    def plot(self, dot_colors=('red', 'blue'), backend='matplotlib'):
+    def plot(self, dot_colors=('red', 'blue'), backend='matplotlib', ax=None, arc=False):
         colors = self._colors(dot_colors)
         if backend == 'matplotlib':
-            return self._matplotlib(colors)
+            if ax is None:
+                fig, ax = plt.subplots(figsize=(8, 8), facecolor=(1, 1, 1))
+            return self._matplotlib(colors, ax, arc)
         elif backend == 'plotly':
-            return self._plotly(colors)
+            return self._plotly(colors, arc)
         else:
             raise ValueError('Backend must be matplotlib or plotly')
