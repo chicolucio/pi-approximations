@@ -36,7 +36,7 @@ pi_monte_carlo = PiMonteCarlo(1)
 pi_monte_carlo.points = int(points) if points != 0 else 1
 
 st.markdown(''.join(content[0]))
-st.plotly_chart(pi_monte_carlo.plot(backend='plotly'),
+st.plotly_chart(pi_monte_carlo.plot(backend='plotly', arc=True),
                 use_container_width=True,
                 config=CONFIG_PLOTLY)
 st.markdown(''.join(content[1]))
