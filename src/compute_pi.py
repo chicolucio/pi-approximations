@@ -10,6 +10,20 @@ from src.helpers import create_coords, distance_points, error
 
 
 def pi_leibniz(number_of_terms):
+    """
+    Pi approximation using Leibniz formula
+
+    Parameters
+    ----------
+    number_of_terms : int
+        Terms of the infinite series
+
+    Returns
+    -------
+    float
+        Pi approximation
+    """
+
     result = 0
     for k in range(number_of_terms):
         result += 1 / ((4 * k + 1) * (4 * k + 3))
@@ -17,6 +31,20 @@ def pi_leibniz(number_of_terms):
 
 
 def pi_euler(number_of_terms):
+    """
+    Pi approximation using Euler formula
+
+    Parameters
+    ----------
+    number_of_terms : int
+        Terms of the infinite series
+
+    Returns
+    -------
+    float
+        Pi approximation
+    """
+
     result = 0
     for k in range(1, number_of_terms + 1):
         result += 1 / k ** 2
@@ -24,8 +52,22 @@ def pi_euler(number_of_terms):
 
 
 class PiMonteCarlo:
+    """
+    Pi approximation by Monte Carlo method
+    """
 
     def __init__(self, points, seed=None):
+        """
+        Class initialization
+
+        Parameters
+        ----------
+        points : int
+            number of points
+        seed : number, optional
+            seed used by the NumPy PRNG. Default None
+        """
+
         self.points = points
         self.seed = seed
 
@@ -56,38 +98,124 @@ class PiMonteCarlo:
             raise ValueError('Points must be a positive integer')
 
     def _gen_coords(self):
+        """
+        Generates points coordinates
+
+        Returns
+        -------
+        generator
+            Coordinates generator
+        """
         return create_coords(self.points, self.seed)
 
     def _mask(self):
+        """
+        Array of 0's (points outside quadrant) and 1's (points inside quadrant)
+
+        Returns
+        -------
+        numpy array
+        """
         return np.where(
             np.array([distance_points(c) for c in self.coords]) <= 1, 1,
             0)
 
     def count_inside_quadrant(self):
+        """
+        Count points inside quadrant
+
+        Returns
+        -------
+        int
+        """
         return np.sum(self._mask())
 
     @cached_property
     def coords(self):
+        """
+        Points coordinates. This is a cached property which means that the values are
+        calculated only on the first time. Posterior calls are faster since the value
+        of the first calculation is cached.
+
+        Returns
+        -------
+        tuple
+        """
         return tuple(self._gen_coords())
 
     @cached_property
     def calculate(self):
+        """
+        Pi estimation. This is a cached property which means that the value is
+        calculated only on the first time. Posterior calls are faster since the value
+        of the first calculation is cached.
+
+        Returns
+        -------
+        float
+        """
         area_estimate = self.count_inside_quadrant() / self.points
         return area_estimate * 4
 
     def error(self, expected=math.pi):
+        """
+        Estimation erro
+
+        Parameters
+        ----------
+        expected : float, optional
+            Pi value of reference. Default: math.pi
+
+        Returns
+        -------
+        float
+        """
         return error(self.calculate, expected)
 
     def _clear_cache(self):
+        """
+        Clears the cached values. This internal method is called every time that a new
+        seed and/or points are set because new coordinates, estimation and errors need
+        to be calculated.
+        """
+
         if 'coords' in self.__dict__:
             del self.__dict__['coords']
         if 'calculate' in self.__dict__:
             del self.__dict__['calculate']
 
     def _colors(self, dot_colors=('red', 'blue')):
+        """
+        Relates colors to points (inside, outside) the quadrant.
+
+        Parameters
+        ----------
+        dot_colors : tuple of strings
+            Colors for (inside, outside) the quadrant points. Default: ('red', 'blue')
+
+        Returns
+        -------
+        numpy array
+        """
         return np.where(self._mask() == 1, *dot_colors)
 
     def _matplotlib(self, colors, ax, arc):
+        """
+        Plot made with Matplotlib
+
+        Parameters
+        ----------
+        colors : tuple of strings
+            Colors for (inside, outside) the quadrant points.
+        ax : matplotlib axis
+            Axis on which the graph will be plotted
+        arc : bool
+            If the quadrant will be plotted
+
+        Returns
+        -------
+        matplotlib axis
+        """
         ax.scatter(*zip(*self.coords), color=colors)
         ax.set_title(fr"Points = {self.points:,.0f}   "
                      fr"$\pi \approx$ {self.calculate:.4f}   "
@@ -101,6 +229,20 @@ class PiMonteCarlo:
         return ax
 
     def _plotly(self, colors, arc):
+        """
+        Plot made with Plotly
+
+        Parameters
+        ----------
+        colors : tuple of strings
+            Colors for (inside, outside) the quadrant points.
+        arc : bool
+            If the quadrant will be plotted
+
+        Returns
+        -------
+        Plotly figure
+        """
         x, y = zip(*self.coords)
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=x, y=y,
@@ -119,6 +261,26 @@ class PiMonteCarlo:
         return fig
 
     def plot(self, dot_colors=('red', 'blue'), backend='matplotlib', ax=None, arc=False):
+        """
+        Public plot API
+
+        Parameters
+        ----------
+        dot_colors : tuple of strings, optional
+            Colors for (inside, outside) the quadrant points. Default: ('red', 'blue')
+        backend : str, optional
+            Plot engine: matplotlib or plotly. Default: matplotlib
+        ax : matplotlib axis, optional
+            Axis on which the graph will be plotted. If None, one will be created. Works
+            only if backend is matplotlib. Default: None
+        arc : bool
+            If the quadrant will be plotted
+
+        Returns
+        -------
+        Matplotlib axis or Plotly figure
+        """
+
         colors = self._colors(dot_colors)
         if backend == 'matplotlib':
             if ax is None:

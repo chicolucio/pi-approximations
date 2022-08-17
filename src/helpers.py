@@ -16,14 +16,57 @@ Coordinate = namedtuple('Coordinate', ('x', 'y'))
 
 
 def distance_points(coord1, coord2=Coordinate(0, 0)):
+    """
+    Euclidean distance between two points
+
+    Parameters
+    ----------
+    coord1 : Coordinate
+        First point coordinate
+    coord2 : Coordinate, optional
+        Second point coordinate. Default: Coordinate(0, 0)
+
+    Returns
+    -------
+    float
+    """
     return np.sqrt((coord1.x - coord2.x) ** 2 + (coord1.y - coord2.y) ** 2)
 
 
 def error(calculated, expected):
+    """
+    Error between a calculated value and an expected value
+
+    Parameters
+    ----------
+    calculated : number
+        Calculated value
+    expected : number
+        Expected value
+
+    Returns
+    -------
+    float
+    """
     return (calculated - expected) / expected
 
 
 def create_coords(points, seed=None):
+    """
+    Generates points coordinates
+
+    Parameters
+    ----------
+    points : int
+        number of points
+    seed : number, optional
+        seed used by the NumPy PRNG. Default None
+
+    Returns
+    -------
+    generator
+        Coordinates generator
+    """
     rng = np.random.default_rng(seed)
     return (Coordinate(rng.uniform(), rng.uniform()) for _ in
             range(int(points)))
