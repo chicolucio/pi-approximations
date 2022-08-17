@@ -63,7 +63,7 @@ class PiMonteCarlo:
             np.array([distance_points(c) for c in self.coords]) <= 1, 1,
             0)
 
-    def count_inside_circle(self):
+    def count_inside_quadrant(self):
         return np.sum(self._mask())
 
     @cached_property
@@ -72,7 +72,7 @@ class PiMonteCarlo:
 
     @cached_property
     def calculate(self):
-        area_estimate = self.count_inside_circle() / self.points
+        area_estimate = self.count_inside_quadrant() / self.points
         return area_estimate * 4
 
     def error(self, expected=math.pi):
@@ -96,8 +96,8 @@ class PiMonteCarlo:
             arc = Arc(xy=(0, 0), theta1=0, theta2=90, height=2, width=2,
                       color='red', linewidth=3)
             ax.add_patch(arc)
-            ax.set_ylim(0, 1)
-            ax.set_xlim(0, 1)
+            ax.set_ylim(-0.02, 1.02)
+            ax.set_xlim(-0.02, 1.02)
         return ax
 
     def _plotly(self, colors, arc):
